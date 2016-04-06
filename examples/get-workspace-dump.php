@@ -44,6 +44,24 @@ foreach ($projects as $project) {
             $task->stories = $asana->getData();
             //var_dump($task->stories);
         }
+        $asana->getTaskAttachments($task->id);
+        if(!$asana->hasError()){
+          $aa = $asana->getData();
+          foreach ($aa as $attachment) {
+            $asana->getAttachment($attachment->id);
+            $attachment2 = $asana->getData();
+
+            // Download.
+            $ch = curl_init($attachment2->download_url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $data = curl_exec($ch);
+            curl_close($ch);
+
+            // TODO: name might be duplicated
+            file_put_contents('assets/' . $attachment2->name, $data);
+            $task->attachments[] = $attachment2;
+          }
+        }
     }
 }
 
