@@ -23,7 +23,7 @@ foreach ($projects as $project) {
     //if ($project->id != 42) { // Quickly filter on a project
     //  continue;
     //}
-
+    $project->tasks = array();
     // Get all tasks in the current project
     $asana->getProjectTasks($project->id);
     if ($asana->hasError()) {
@@ -62,10 +62,12 @@ foreach ($projects as $project) {
             $task->attachments[] = $attachment2;
           }
         }
+
+        $project->tasks[] = $task;
     }
 }
 
 //var_dump($projects);
 
 echo "All as JSON:\n";
-echo json_encode($projects);
+echo json_encode($projects, JSON_PRETTY_PRINT);
